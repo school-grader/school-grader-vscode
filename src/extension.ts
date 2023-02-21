@@ -76,39 +76,22 @@ export function activate(context: vscode.ExtensionContext) {
 					}
 		
 					let lineNumbers = Object.keys(jsonObject).map((key) => parseInt(key, 10));
+
+					const getDecorationsByStatus = (status: string) => {
+						return lineNumbers
+						  .filter((lineNumber) => jsonObject[lineNumber].status === status)
+						  .map((lineNumber) => {
+							const line = editor.document.lineAt(lineNumber - 1);
+							return {
+							  range: new vscode.Range(line.range.start, line.range.end),
+							  hoverMessage: jsonObject[lineNumber].message,
+							};
+						  });
+					  };
 		
-					// Get the decorations for the success lines
-					let successDecorations = lineNumbers.filter((lineNumber) => {
-						return jsonObject[lineNumber].status === 'success';
-					}).map((lineNumber) => {
-						let line = editor.document.lineAt(lineNumber - 1);
-						return {
-							range: new vscode.Range(line.range.start, line.range.end),
-							hoverMessage: jsonObject[lineNumber].message
-						};
-					});
-					
-					// Get the decorations for the failure lines
-					let failureDecorations = lineNumbers.filter((lineNumber) => {
-						return jsonObject[lineNumber].status === 'failure';
-					}).map((lineNumber) => {
-						let line = editor.document.lineAt(lineNumber - 1);
-						return {
-							range: new vscode.Range(line.range.start, line.range.end),
-							hoverMessage: jsonObject[lineNumber].message
-						};
-					});
-					
-					// Get the decorations for the error lines
-					let errorDecorations = lineNumbers.filter((lineNumber) => {
-						return jsonObject[lineNumber].status === 'error';
-					}).map((lineNumber) => {
-						let line = editor.document.lineAt(lineNumber - 1);
-						return {
-							range: new vscode.Range(line.range.start, line.range.end),
-							hoverMessage: jsonObject[lineNumber].message
-						};
-					});
+					const successDecorations = getDecorationsByStatus('success');
+					const failureDecorations = getDecorationsByStatus('failure');
+					const errorDecorations = getDecorationsByStatus('error');
 					
 					// Apply the decorations to the active text editor
 					editor.setDecorations(successDecorationType, successDecorations);

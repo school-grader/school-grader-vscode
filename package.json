@@ -4,7 +4,7 @@
   "description": "Testing of students code against a set of test cases",
   "publisher": "school-grader",
   "icon" : "assets/icon.png",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "engines": {
     "vscode": "^1.75.0"
   },
